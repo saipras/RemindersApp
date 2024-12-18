@@ -15,8 +15,8 @@ jobs:
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           title-regex: >-
-            ^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release)
-            .+$
+            ^\[([a-zA-Z0-9-]+-\d+)\]\s+(add|remove|change|breaking
+            change|fix|release) .+$
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false

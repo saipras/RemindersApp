@@ -13,7 +13,7 @@ jobs:
       - name: Validate Branch Name
         run: |
           # Validate if the branch name follows the pattern 'feature/<ticket-id>', 'hotfix/<ticket-id>', or 'release/<ticket-id>'
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z0-9]+-\d+$ ]]; then
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z0-9-_]+-\d+$ ]]; then
             echo "❌ Invalid branch name: ${{ github.head_ref }}"
             echo "Branch names must follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-300')." >&2
             exit 1

@@ -1,0 +1,21 @@
+name: PR Lint
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  pr-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: PR Title Linter
+        uses: morrisoncole/pr-lint-action@v1.7.1
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title-regex: '^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release) .+$'
+          on-failed-regex-fail-action: true
+          on-failed-regex-create-review: true
+          on-failed-regex-request-changes: false
+          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`"
+          on-succeeded-regex-dismiss-review-comment: "Awesome! The PR title is correct and matches the format. Success!"

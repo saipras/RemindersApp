@@ -1,22 +1,23 @@
 name: PR Lint
-'on':
+on:
   pull_request:
     types:
       - opened
       - edited
       - reopened
       - synchronize
+
 jobs:
   pr-lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: PR Title Linter
         uses: morrisoncole/pr-lint-action@v1.7.1
         with:
           repo-token: '${{ secrets.GITHUB_TOKEN }}'
           title-regex: >-
-            ^\[([a-zA-Z0-9-]+-\d+)\]\s+(add|remove|change|breaking
-            change|fix|release) .+$
+            ^\[([a-zA-Z0-9-]+-\d+)\]\s+(add|remove|change|breaking change|fix|release|Add|Remove|Change|Breaking Change|Fix|Release) .+$
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false
@@ -25,14 +26,12 @@ jobs:
             {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the
             title`
           on-succeeded-regex-dismiss-review-comment: Awesome! The PR title is correct and matches the format. Success!
+
       - name: Branch Name Linter
         run: >
           BRANCH_NAME="feature/test-002"
 
-          if [[ ! "$BRANCH_NAME" =~
-          ^(feature|hotfix|release)\/[a-zA-Z0-9\-_]+-[0-9]+$ ]] && [[ !
-          "$BRANCH_NAME" =~ ^[a-zA-Z0-9\-_]+-[0-9]+\/(feature|hotfix|release)$
-          ]]; then
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|hotfix|release)\/[a-zA-Z0-9\-_]+-[0-9]+$ ]] && [[ ! "$BRANCH_NAME" =~ ^[a-zA-Z0-9\-_]+-[0-9]+\/(feature|hotfix|release)$ ]]; then
             exit 1
           else
             echo "✅ Valid branch name: $BRANCH_NAME"

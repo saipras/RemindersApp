@@ -1,22 +1,20 @@
----
 name: PR Lint
+
 on:
   pull_request:
-    types:
-      - opened
-      - edited
-      - reopened
-      - synchronize
+    types: [opened, edited, reopened, synchronize]
+
 jobs:
   pr-lint:
     runs-on: ubuntu-latest
+
     steps:
       - name: Check out the code
         uses: actions/checkout@v2
-      - name: Validate Branch Name
-        run: >
-          BRANCH_NAME="${{ github.head_ref }}"
 
+      - name: Validate Branch Name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
           if [[ ! "$BRANCH_NAME" =~ ^(feature|hotfix|release)/[a-zA-Z0-9-_]+-[0-9]+$ && ! "$BRANCH_NAME" =~ ^[a-zA-Z0-9-_]+-[0-9]+/(feature|hotfix|release)$ ]]; then
             echo "❌ Invalid branch name: $BRANCH_NAME"
             echo "Branch names must follow one of these formats:"
@@ -30,14 +28,14 @@ jobs:
           else
             echo "✅ Valid branch name: $BRANCH_NAME"
           fi
+
       - name: PR Title Linter
         uses: morrisoncole/pr-lint-action@v1.7.1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          title-regex: ^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release)
-            .+$
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          title-regex: '^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release) .+$'
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false
-          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] Add|Remove|Change|Breaking Change|Fix|Release The rest of the title`"
-          on-succeeded-regex-dismiss-review-comment: Awesome! The PR title is correct and matches the format. Success!
+          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`"
+          on-succeeded-regex-dismiss-review-comment: "Awesome! The PR title is correct and matches the format. Success!"

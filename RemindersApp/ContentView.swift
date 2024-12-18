@@ -17,16 +17,9 @@ struct ContentView: View {
             Text("Hello, world!")
             Text("Hello, world!")
             Text("Hello, world!")
-
             Text("Hello, world!")
             Text("Hello, world!")
-            
-            
-            Text("Hello, world!")
-            Text("Sai Prasad")
-            Text("Sai Prasad")
-            Text("Sai Prasad")
-            Text("feature/remtest-01")
+        
 
             
             

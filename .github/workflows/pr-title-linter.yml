@@ -22,10 +22,14 @@ jobs:
 
       - name: Branch Name Linter
         run: |
-          branch_name="${{ github.head_ref }}"
-          if [[ ! "$branch_name" =~ ^(feature|hotfix|release)\/[a-zA-Z0-9\-]+$ ]]; then
-            echo "Branch name does not match the expected format (feature/test-001, hotfix/test-001, release/REM-010, etc.)."
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|hotfix|release)\/[a-zA-Z0-9\-]+-[0-9]+$ ]]; then
+            echo "❌ Invalid branch name: $BRANCH_NAME"
+            echo "Branch names must follow one of these formats:"
+            echo "- feature/<ticket-number> (e.g., feature/abc-300)"
+            echo "- hotfix/<ticket-number> (e.g., hotfix/abc-300)"
+            echo "- release/<ticket-number> (e.g., release/aav-222)"
             exit 1
           else
-            echo "Branch name is valid."
+            echo "✅ Valid branch name: $BRANCH_NAME"
           fi

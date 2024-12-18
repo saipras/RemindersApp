@@ -9,13 +9,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Validate Branch Name
       - name: Validate Branch Name
         run: |
           # Validate if the branch name follows the pattern 'feature/<ticket-id>', 'hotfix/<ticket-id>', or 'release/<ticket-id>'
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z0-9-_]+-\d+$ ]]; then
+          if [[ ! "${{ github.head_ref }}" =~ ^((feature|hotfix|release)/[a-zA-Z0-9-_]+-\d+)|([a-zA-Z0-9-_]+-\d+/(feature|hotfix|release)))$ ]]; then
             echo "❌ Invalid branch name: ${{ github.head_ref }}"
-            echo "Branch names must follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-300')." >&2
+            echo "Branch names must follow one of these formats:"
+            echo "- feature/<ticket-number> (e.g., feature/abc-300)"
+            echo "- hotfix/<ticket-number> (e.g., hotfix/abc-300)"
+            echo "- release/<ticket-number> (e.g., release/aav-222)"
+            echo "- <ticket-number>/feature (e.g., abc-300/feature)"
+            echo "- <ticket-number>/hotfix (e.g., abc-300/hotfix)"
+            echo "- <ticket-number>/release (e.g., aav-222/release)"
             exit 1
           else
             echo "✅ Valid branch name: ${{ github.head_ref }}"

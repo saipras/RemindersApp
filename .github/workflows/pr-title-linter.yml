@@ -12,7 +12,8 @@ jobs:
       # Validate Branch Name
       - name: Validate Branch Name
         run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z]+-\d+$ ]]; then
+          # Validate if the branch name follows the pattern 'feature/<ticket-id>', 'hotfix/<ticket-id>', or 'release/<ticket-id>'
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z0-9]+-\d+$ ]]; then
             echo "❌ Invalid branch name: ${{ github.head_ref }}"
             echo "Branch names must follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-300')." >&2
             exit 1
@@ -29,5 +30,10 @@ jobs:
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false
-          on-failed-regex-comment: "The PR title must follow this format: `[TICKET-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`."
+          on-failed-regex-comment: |
+            The PR title must follow this format:
+            ```
+            [TICKET-ID] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title
+            ```
+            Example: `[abc-300] Add new feature to improve performance`
           on-succeeded-regex-dismiss-review-comment: "Awesome! The PR title is correct and matches the format. Success!"

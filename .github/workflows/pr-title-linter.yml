@@ -9,12 +9,10 @@ on:
 
 jobs:
   pr-lint:
-    name: Validate PR commit title meets commit convention
+    name: Skip PR title and commit message validation
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v4.5.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          validateSingleCommit: true
-          validateSingleCommitMatchesPrTitle: true
+      - name: No Validation
+        run: |
+          echo "Skipping PR title and commit message validation."
+

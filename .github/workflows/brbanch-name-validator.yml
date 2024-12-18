@@ -1,33 +1,29 @@
-name: PR Lint
+name: Branch Name Validation
 
 on:
   pull_request:
-    types: [opened, edited, reopened, synchronize]
+    branches:
+      - '*'
 
 jobs:
-  pr-lint:
+  validate-branch-name:
     runs-on: ubuntu-latest
 
     steps:
-      # Validate Branch Name
-      - name: Validate Branch Name
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set script permissions
+        run: chmod +x ./.github/scripts/validate-branch-name.sh
+
+      - name: Get branch name
+        id: get_branch
         run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z]+-0*[1-9][0-9]*$ ]]; then
-            echo "❌ Invalid branch name: ${{ github.head_ref }}"
-            echo "Branch names must follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-399')." >&2
-            exit 1
+          if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+            BRANCH_NAME=${GITHUB_HEAD_REF}
           else
-            echo "✅ Valid branch name: ${{ github.head_ref }}"
+            BRANCH_NAME=${GITHUB_REF#refs/heads/}
           fi
 
-      # PR Title Linter
-      - name: PR Title Linter
-        uses: morrisoncole/pr-lint-action@v1.7.1
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          title-regex: '^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release) .+$'
-          on-failed-regex-fail-action: true
-          on-failed-regex-create-review: true
-          on-failed-regex-request-changes: false
-          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`"
-          on-succeeded-regex-dismiss-review-comment: "Awesome! The PR title is correct and matches the format. Success!"
+      - name: Validate Branch Name
+        run: ./.github/scripts/validate-branch-name.sh ${{ steps.get_branch.outputs.branch }}

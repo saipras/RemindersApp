@@ -9,6 +9,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Validate PR Branch Name
+      - name: Validate Branch Name
+        run: |
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|release|hotfix)/.*$ ]]; then
+            echo "❌ Invalid branch name: ${{ github.head_ref }}"
+            echo "Branch names should start with 'feature/', 'release/', or 'hotfix/'." >&2
+            exit 1
+          else
+            echo "✅ Valid branch name: ${{ github.head_ref }}"
+          fi
+
+      # PR Title Linter
       - name: PR Title Linter
         uses: morrisoncole/pr-lint-action@v1.7.1
         with:

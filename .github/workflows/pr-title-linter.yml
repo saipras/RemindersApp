@@ -34,7 +34,4 @@ jobs:
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           title-regex: '^(\[(\w+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release) .+$'
-          on-failed-regex-fail-action: true
-          on-failed-regex-create-review: true
-          on-failed-regex-request-changes: false
-          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`"
+          on-failed-regex-f

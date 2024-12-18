@@ -12,20 +12,24 @@ jobs:
       # Validate Branch Name
       - name: Validate Branch Name
         run: |
-          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z]+-[0-9]+$ ]]; then
+          if [[ ! "${{ github.head_ref }}" =~ ^(feature|hotfix|release)/[a-zA-Z]+-\d+$ ]]; then
             echo "❌ Invalid branch name: ${{ github.head_ref }}"
-            echo "Branch names should follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-300')." >&2
+            echo "Branch names must follow the format 'feature/<ticket-number>', 'hotfix/<ticket-number>', or 'release/<ticket-number>' (e.g., 'feature/abc-300')." >&2
             exit 1
           else
             echo "✅ Valid branch name: ${{ github.head_ref }}"
           fi
+
+      # Print PR Title for Debugging
+      - name: Print PR Title
+        run: echo "PR Title: ${{ github.event.pull_request.title }}"
 
       # PR Title Linter
       - name: PR Title Linter
         uses: morrisoncole/pr-lint-action@v1.7.1
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          title-regex: '^(\[([a-zA-Z]+-\d+)\]\s*)+(Add|Remove|Change|Breaking Change|Fix|Release) .+$'
+          title-regex: '^\[(\w+-\d+)\]\s+(Add|Remove|Change|Breaking Change|Fix|Release)\s+.+$'
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false

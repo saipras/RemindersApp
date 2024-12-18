@@ -9,24 +9,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out the code
+        uses: actions/checkout@v2
+
       - name: Validate Branch Name
         run: |
-          # Validate if the branch name follows the pattern 'feature/<ticket-id>', 'hotfix/<ticket-id>', or 'release/<ticket-id>'
-          if [[ ! "${{ github.head_ref }}" =~ ^((feature|hotfix|release)/[a-zA-Z0-9-_]+-\d+)|([a-zA-Z0-9-_]+-\d+/(feature|hotfix|release)))$ ]]; then
-            echo "❌ Invalid branch name: ${{ github.head_ref }}"
-            echo "Branch names must follow one of these formats:"
-            echo "- feature/<ticket-number> (e.g., feature/abc-300)"
-            echo "- hotfix/<ticket-number> (e.g., hotfix/abc-300)"
-            echo "- release/<ticket-number> (e.g., release/aav-222)"
-            echo "- <ticket-number>/feature (e.g., abc-300/feature)"
-            echo "- <ticket-number>/hotfix (e.g., abc-300/hotfix)"
-            echo "- <ticket-number>/release (e.g., aav-222/release)"
+          BRANCH_NAME="${{ github.head_ref }}"
+          if [[ ! "$BRANCH_NAME" =~ ^(feature|hotfix|release)/[a-z]+-[0-9]+$ ]]; then
+            echo "Branch name '$BRANCH_NAME' does not follow the required format: 'feature/abc-001', 'hotfix/avc-222', or 'release/aaa-222'."
             exit 1
-          else
-            echo "✅ Valid branch name: ${{ github.head_ref }}"
           fi
 
-      # PR Title Linter
       - name: PR Title Linter
         uses: morrisoncole/pr-lint-action@v1.7.1
         with:
@@ -35,10 +28,5 @@ jobs:
           on-failed-regex-fail-action: true
           on-failed-regex-create-review: true
           on-failed-regex-request-changes: false
-          on-failed-regex-comment: |
-            The PR title must follow this format:
-            ```
-            [TICKET-ID] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title
-            ```
-            Example: `[abc-300] Add new feature to improve performance`
+          on-failed-regex-comment: "The PR should follow this format: `[ABCD-123] {Add|Remove|Change|Breaking Change|Fix|Release} The rest of the title`"
           on-succeeded-regex-dismiss-review-comment: "Awesome! The PR title is correct and matches the format. Success!"
